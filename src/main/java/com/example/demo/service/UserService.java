@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.converter.UserCreateRequestConverter;
 import com.example.demo.dto.converter.UserDtoConverter;
 import com.example.demo.dto.request.CreateUserRequest;
 import com.example.demo.dto.request.UpdateUserRequest;
@@ -15,12 +16,14 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
+    private final UserCreateRequestConverter userCreateRequestConverter;
 
     public UserService(UserRepository userRepository,
-                       UserDtoConverter userDtoConverter
-    ) {
+                       UserDtoConverter userDtoConverter,
+                       UserCreateRequestConverter userCreateRequestConverter) {
         this.userRepository = userRepository;
         this.userDtoConverter = userDtoConverter;
+        this.userCreateRequestConverter = userCreateRequestConverter;
     }
 
     protected User findUserById(String id) {
@@ -34,27 +37,15 @@ public class UserService {
     }
 
     public UserDto createUser(CreateUserRequest createUserRequest) {
-
-        User user = new User(
-                createUserRequest.getFirstName(),
-                createUserRequest.getLastName(),
-                createUserRequest.getBirthDate()
-        );
+        User user = userCreateRequestConverter.userSaveRequestToUser(createUserRequest);
         return userDtoConverter.convertToUserDto(userRepository.save(user));
-
-
-//        Author author = authorSaveRequestConverter.authorSaveRequestToAuthor(authorSaveRequest);
-//
-//        return authorDtoConverter.convertToAuthorDto(
-//                this.authorRepository.save(author)
-//        );
     }
 
     public UserDto getUserById(String id) {
         return userDtoConverter.convertToUserDto(findUserById(id));
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllUserDtoList() {
         return userDtoConverter.convertToUserDtoList(getAllUserList());
     }
 

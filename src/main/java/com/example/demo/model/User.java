@@ -22,7 +22,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id = "";
+    private String id;
 
     private String firstName;
 
@@ -30,4 +30,9 @@ public class User {
 
     private LocalDate birthDate;
 
+    public User(String firstName, String lastName, LocalDate birthDate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+    }
 }
